@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>BurgerTime Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<style>
+  :root {
+    --red: #d9232a;
+    --yellow: #fecf09;
+    --black: #111111;
+    --cream: #fdfbf7;
+    --paper: #f4efe9;
+    --gray: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--black);
+    font-family: 'Open Sans', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ─── SPLASH / HERO ─── */
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  #splash .logo-wrap {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+    animation: splashPop 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.3s forwards;
+  }
+
+  #splash .tagline {
+    font-family: 'Pacifico', cursive;
+    color: var(--red);
+    font-size: 20px;
+    margin-top: 8px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.9s forwards;
+  }
+
+  #splash .bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: loadBar 1.2s ease 0.4s forwards;
+  }
+
+  @keyframes splashPop {
+    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(10px); }
+  }
+  @keyframes loadBar {
+    to { transform: scaleX(1); }
+  }
+
+  #splash.hide {
+    animation: splashOut 0.6s cubic-bezier(0.55,0,1,0.45) forwards;
+  }
+  @keyframes splashOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-100%); }
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253,251,247,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(0,0,0,0.08);
+    padding: 12px 16px;
+    animation: headerSlideDown 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.8s both;
+  }
+
+  @keyframes headerSlideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .header-open {
+    text-align: left;
+  }
+  .header-open .script {
+    font-family: 'Pacifico', cursive;
+    color: var(--red);
+    font-size: 22px;
+    line-height: 1;
+    display: block;
+    transform: rotate(-6deg);
+  }
+  .header-open .hours {
+    font-size: 11px;
+    font-weight: 700;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 4px;
+  }
+  .header-open .hours .material-icons { font-size: 13px; }
+
+  .header-logo {
+    text-align: center;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  .header-logo:active { transform: scale(0.95); }
+
+  /* Logo SVG en header */
+  .header-logo img {
+    height: 48px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .header-contact {
+    text-align: right;
+  }
+  .header-contact .script2 {
+    font-family: 'Pacifico', cursive;
+    color: var(--red);
+    font-size: 13px;
+    display: block;
+    line-height: 1;
+  }
+  .header-contact a {
+    color: var(--black);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    display: block;
+    margin-top: 4px;
+    transition: color 0.2s;
+  }
+  .header-contact a:active { color: var(--red); }
+
+  /* ─── MAIN ─── */
+  main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 16px 80px;
+  }
+
+  /* ─── PAGE TITLE ─── */
+  .page-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 72px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-align: center;
+    padding: 32px 0 8px;
+    line-height: 1;
+    opacity: 0;
+    animation: titleReveal 0.8s cubic-bezier(0.34,1.2,0.64,1) 2s forwards;
+    position: relative;
+  }
+
+  .page-title::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 5px;
+    background: var(--red);
+    margin: 8px auto 0;
+    animation: titleLine 0.6s ease 2.6s forwards;
+  }
+
+  @keyframes titleReveal {
+    from { opacity: 0; transform: scale(0.6) skewX(-5deg); }
+    to { opacity: 1; transform: scale(1) skewX(0deg); }
+  }
+  @keyframes titleLine {
+    to { width: 80px; }
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: scale(0.92);
+    transition:
+      opacity 0.5s ease,
+      transform 0.55s cubic-bezier(0.33, 0, 0.1, 1);
+    will-change: transform, opacity;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: scale(0.92);
+    transition:
+      opacity 0.5s ease,
+      transform 0.55s cubic-bezier(0.33, 0, 0.1, 1);
+    will-change: transform, opacity;
+  }
+  .reveal-left.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    font-family: 'Anton', sans-serif;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 6px solid var(--red);
+    padding-left: 14px;
+    margin: 36px 0 20px;
+    line-height: 1.1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red);
+    transform: translateX(-105%);
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+  .section-title.visible::after {
+    animation: titleSwipe 0.5s ease forwards;
+  }
+  @keyframes titleSwipe {
+    0% { transform: translateX(-105%); }
+    40% { transform: translateX(0); }
+    80% { transform: translateX(105%); }
+    100% { transform: translateX(105%); }
+  }
+
+  /* ─── BURGER CARD ─── */
+  .burger-card {
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+  }
+
+  .burger-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--red);
+    transform: scaleY(0);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    transform-origin: bottom;
+  }
+
+  .burger-card:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    border-color: var(--red);
+  }
+
+  .burger-card.tapped::before { transform: scaleY(1); }
+
+  .burger-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .burger-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    flex: 1;
+  }
+
+  .burger-price {
+    font-family: 'Anton', sans-serif;
+    font-size: 20px;
+    color: var(--red);
+    letter-spacing: 0;
+    white-space: nowrap;
+    margin-left: 12px;
+    background: var(--yellow);
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 2px solid var(--black);
+    box-shadow: 2px 2px 0 var(--black);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .burger-card:active .burger-price {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+
+  .burger-desc {
+    font-size: 13px;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+
+  /* ─── PAPAS LIST ─── */
+  .papas-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .papas-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(254,207,9,0.15), transparent);
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .papas-item:active {
+    transform: scale(0.97);
+    border-color: var(--yellow);
+  }
+  .papas-item:active::after {
+    animation: shimmer 0.5s ease forwards;
+  }
+
+  @keyframes shimmer {
+    to { transform: translateX(100%); }
+  }
+
+  .papas-price {
+    font-family: 'Anton', sans-serif;
+    font-size: 18px;
+    color: var(--black);
+  }
+
+  /* ─── EXTRAS GRID ─── */
+  .extras-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .extra-item {
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1),
+                border-color 0.2s, background 0.2s;
+  }
+
+  .extra-item:active {
+    transform: scale(0.94) rotate(-1deg);
+    border-color: var(--red);
+    background: #fff5f5;
+  }
+
+  .extra-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--black);
+  }
+  .extra-price {
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    color: var(--red);
+  }
+
+  /* ─── FLOATING ELEMENTS (decorative) ─── */
+  .fire-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    margin-left: 6px;
+    animation: pulse 1.5s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.6; }
+  }
+
+  /* ─── STAGGER ANIMATION for cards ─── */
+  .stagger-1 { transition-delay: 0.05s !important; }
+  .stagger-2 { transition-delay: 0.10s !important; }
+  .stagger-3 { transition-delay: 0.15s !important; }
+  .stagger-4 { transition-delay: 0.20s !important; }
+  .stagger-5 { transition-delay: 0.25s !important; }
+  .stagger-6 { transition-delay: 0.30s !important; }
+  .stagger-7 { transition-delay: 0.35s !important; }
+  .stagger-8 { transition-delay: 0.40s !important; }
+  .stagger-9 { transition-delay: 0.45s !important; }
+  .stagger-10 { transition-delay: 0.50s !important; }
+  .stagger-11 { transition-delay: 0.55s !important; }
+  .stagger-12 { transition-delay: 0.60s !important; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--yellow), transparent);
+    margin: 32px 0;
+    opacity: 0;
+    transform: scaleX(0.3);
+    transition: opacity 0.6s, transform 0.6s ease;
+  }
+  .divider.visible {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  /* ─── WAV MARQUEE ─── */
+  .marquee-wrap {
+    overflow: hidden;
+    background: var(--red);
+    color: var(--yellow);
+    padding: 8px 0;
+    margin: 0 -16px;
+    font-family: 'Anton', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .marquee-track {
+    display: inline-block;
+    animation: marqueeScroll 15s linear infinite;
+  }
+
+  .marquee-track span {
+    display: inline-block;
+    padding: 0 20px;
+  }
+
+  .marquee-track .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--yellow);
+    border-radius: 50%;
+    margin: 0 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes marqueeScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--black);
+    color: white;
+    text-align: center;
+    padding: 32px 16px;
+    margin: 40px -16px 0;
+  }
+
+  footer .footer-logo img {
+    height: 52px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  footer .footer-script {
+    font-family: 'Pacifico', cursive;
+    color: var(--red);
+    font-size: 18px;
+    display: block;
+    margin: 6px 0;
+  }
+
+  footer p {
+    color: #666;
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  /* ─── WHATSAPP BTN ─── */
+  .wa-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    background: #25D366;
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(37,211,102,0.5);
+    z-index: 200;
+    text-decoration: none;
+    animation: waBounce 2s ease 3s infinite;
+    transition: transform 0.2s;
+  }
+
+  .wa-btn:active { transform: scale(0.9); }
+
+  @keyframes waBounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    90% { transform: translateY(-8px); }
+  }
+
+  .wa-btn .material-icons { font-size: 28px; }
+
+  /* ─── PRICE TAG BADGE ─── */
+  .badge-hot {
+    background: var(--red);
+    color: white;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+    animation: badgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes badgePop {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+
+  /* ─── SCROLL TOP BUTTON ─── */
+  #scrollTop {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: var(--black);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s, transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  #scrollTop.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  #scrollTop:active { transform: scale(0.9); }
+  #scrollTop .material-icons { font-size: 20px; }
+
+  /* ─── RIPPLE ─── */
+  .ripple-container { position: relative; overflow: hidden; }
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(217,35,42,0.15);
+    transform: scale(0);
+    animation: rippleAnim 0.5s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* ─── CATEGORY NAV (sticky tabs) ─── */
+  .cat-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 12px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    opacity: 0;
+    animation: fadeUp2 0.5s ease 2.2s forwards;
+  }
+  @keyframes fadeUp2 {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cat-nav::-webkit-scrollbar { display: none; }
+
+  .cat-pill {
+    flex-shrink: 0;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    text-decoration: none;
+    color: var(--black);
+    white-space: nowrap;
+  }
+
+  .cat-pill:active,
+  .cat-pill.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(217,35,42,0.3);
+  }
+
+  /* ─── LOMO CARD ─── */
+  .lomo-card {
+    background: var(--black);
+    color: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  .lomo-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: var(--yellow);
+    border-radius: 0 16px 0 80px;
+    opacity: 0.12;
+  }
+
+  .lomo-card:active { transform: scale(0.97); }
+
+  .lomo-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 6px;
+  }
+
+  .lomo-desc {
+    font-size: 13px;
+    color: #999;
+    line-height: 1.5;
+  }
+
+  .lomo-price {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    color: var(--yellow);
+    position: absolute;
+    top: 14px;
+    right: 16px;
+  }
+
+  /* Splash logo SVG */
+  .splash-logo-img {
+    height: 110px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="logo-wrap">
+    <div style="text-align:center">
+      <img src="./logo.svg" alt="BurgerTime" class="splash-logo-img" />
+    </div>
+    <div class="tagline" style="text-align:center;margin-top:12px;">Make a Gourmet</div>
+  </div>
+  <div class="bar"></div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="header-open">
+      <span class="script">Open</span>
+      <div class="hours">
+        <span class="material-icons">schedule</span>
+        9pm – 2am
+      </div>
+    </div>
+
+    <div class="header-logo">
+      <img src="./logo.svg" alt="BurgerTime" />
+    </div>
+
+    <div class="header-contact">
+      <span class="script2">Gourmet</span>
+      <a href="tel:3834003945">383 400-3945</a>
+      <a href="#">@burger.time_</a>
+    </div>
+  </div>
+</header>
+
+<!-- CAT NAV -->
+<div style="background:var(--cream); position:sticky; top:68px; z-index:90; border-bottom:1px solid rgba(0,0,0,0.08);">
+  <div style="max-width:600px;margin:0 auto;padding:0 16px;">
+    <nav class="cat-nav">
+      <a class="cat-pill active" href="#hamburguesas">🍔 Hamburguesas</a>
+      <a class="cat-pill" href="#lomos">🥩 Lomos</a>
+      <a class="cat-pill" href="#papas">🍟 Papas</a>
+      <a class="cat-pill" href="#extras">➕ Extras</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="page-title">Menu</div>
+
+  <!-- HAMBURGUESAS -->
+  <div id="hamburguesas">
+    <h2 class="section-title reveal">Hamburguesas de Vacio <span class="fire-dot"></span></h2>
+
+    <div class="burger-card ripple-container reveal stagger-1">
+      <div class="burger-card-header">
+        <span class="burger-name">Onion BBQ</span>
+        <span class="burger-price">$13.350</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, cheddar, bacon, cebolla crisp, salsa BBQ</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-2">
+      <div class="burger-card-header">
+        <span class="burger-name">Oklahoma</span>
+        <span class="burger-price">$12.200</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash con cebolla blanca, cheddar, aderezo de la casa</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-3">
+      <div class="burger-card-header">
+        <span class="burger-name">Time 2.0 <span class="badge-hot">Popular</span></span>
+        <span class="burger-price">$13.900</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, cheddar, bacon ahumado, pepinillos agridulce, tomate, rúcula, cebolla morada, aderezo de la casa</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-4">
+      <div class="burger-card-header">
+        <span class="burger-name">Dukesa</span>
+        <span class="burger-price">$13.100</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, queso pategras, morrones asados, cebolla caramelizada, queso azul</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-5">
+      <div class="burger-card-header">
+        <span class="burger-name">4 Quesos</span>
+        <span class="burger-price">$13.700</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, quesos (azul, cheddar, provolone, tybo)</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-6">
+      <div class="burger-card-header">
+        <span class="burger-name">Provolone 2.0</span>
+        <span class="burger-price">$14.800</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, queso tybo, provolone, tomates confitados, rúcula</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-7">
+      <div class="burger-card-header">
+        <span class="burger-name">Agridulce</span>
+        <span class="burger-price">$13.100</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, bacon, cebolla caramelizada, provolone, tybo</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-8">
+      <div class="burger-card-header">
+        <span class="burger-name">Mexicana</span>
+        <span class="burger-price">$12.800</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, morrones asados, lechuga, salsa guacamole, picante (opcional)</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-9">
+      <div class="burger-card-header">
+        <span class="burger-name">Doble ¼ Libra</span>
+        <span class="burger-price">$11.500</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, cheddar x4, cebolla morada en cubos, ketchup, mostaza</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-10">
+      <div class="burger-card-header">
+        <span class="burger-name">Mi Amor</span>
+        <span class="burger-price">$13.300</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, pepinillos agridulce, bacon, salsa mil islas</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-11">
+      <div class="burger-card-header">
+        <span class="burger-name">Burger Time</span>
+        <span class="burger-price">$13.900</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, cheddar, bacon, lechuga, tomate</p>
+    </div>
+
+    <div class="burger-card ripple-container reveal stagger-12" style="border:2px solid var(--red); background:linear-gradient(135deg,#fff,#fff8f8);">
+      <div class="burger-card-header">
+        <span class="burger-name">XXX Burguer <span class="badge-hot">🔥</span></span>
+        <span class="burger-price">$14.300</span>
+      </div>
+      <p class="burger-desc">Pan de papa artesanal, doble smash de carne, cheddar x4, morrones asados, provolone, cebolla caramelizada, aderezo especial</p>
+    </div>
+  </div>
+
+  <!-- MARQUEE DIVIDER -->
+  <div class="marquee-wrap reveal" style="margin:32px -16px;">
+    <div class="marquee-track">
+      <span>Smash Burger</span><span class="dot"></span>
+      <span>Hecho a la Parrilla</span><span class="dot"></span>
+      <span>BurgerTime</span><span class="dot"></span>
+      <span>Make a Gourmet</span><span class="dot"></span>
+      <span>Vacío Premium</span><span class="dot"></span>
+      <span>Smash Burger</span><span class="dot"></span>
+      <span>Hecho a la Parrilla</span><span class="dot"></span>
+      <span>BurgerTime</span><span class="dot"></span>
+      <span>Make a Gourmet</span><span class="dot"></span>
+      <span>Vacío Premium</span><span class="dot"></span>
+    </div>
+  </div>
+
+  <!-- LOMOS -->
+  <div id="lomos">
+    <h2 class="section-title reveal">Lomos <span class="fire-dot"></span></h2>
+
+    <div class="lomo-card reveal stagger-1">
+      <div class="lomo-price">$15.700</div>
+      <div class="lomo-name">Lomo Americano</div>
+      <p class="lomo-desc">Pan de lomo, cheddar, bacon, cebolla crispy, salsa BBQ</p>
+    </div>
+
+    <div class="lomo-card reveal stagger-2">
+      <div class="lomo-price">$15.900</div>
+      <div class="lomo-name">Lomo BurgerTime</div>
+      <p class="lomo-desc">Pan de lomo, cheddar, bacon, cebolla morada, lechuga, tomate, aderezo especial</p>
+    </div>
+
+    <div class="lomo-card reveal stagger-3">
+      <div class="lomo-price">$17.200</div>
+      <div class="lomo-name">Lomo Provolone</div>
+      <p class="lomo-desc">Pan de lomo, provolone, tybo, rúcula, tomates confitados</p>
+    </div>
+
+    <div class="lomo-card reveal stagger-4">
+      <div class="lomo-price">$16.500</div>
+      <div class="lomo-name">Lomo Azul</div>
+      <p class="lomo-desc">Pan de lomo, queso azul, rúcula, cebolla crispy, morrones asados</p>
+    </div>
+
+    <div class="lomo-card reveal stagger-5">
+      <div class="lomo-price">$15.500</div>
+      <div class="lomo-name">Lomo Mexicano</div>
+      <p class="lomo-desc">Pan de lomo, salsa guacamole, lechuga, queso tybo</p>
+    </div>
+
+    <div class="lomo-card reveal stagger-6">
+      <div class="lomo-price">$15.200</div>
+      <div class="lomo-name">Lomo Especial</div>
+      <p class="lomo-desc">Pan de lomo, lechuga, tomate, huevo, jamón, tybo, mayonesa, mostaza</p>
+    </div>
+
+    <div class="lomo-card reveal stagger-7">
+      <div class="lomo-price">$17.100</div>
+      <div class="lomo-name">Lomo 4 Quesos</div>
+      <p class="lomo-desc">Pan de lomo, quesos (provolone, cheddar, azul, tybo)</p>
+    </div>
+  </div>
+
+  <div class="divider reveal"></div>
+
+  <!-- PAPAS -->
+  <div id="papas">
+    <h2 class="section-title reveal">Papas &amp; Entradas <span class="fire-dot"></span></h2>
+
+    <div class="papas-item ripple-container reveal stagger-1">
+      <span>Papas americanas</span>
+      <span class="papas-price">$9.500</span>
+    </div>
+    <div class="papas-item ripple-container reveal stagger-2">
+      <span>Papas 4 quesos</span>
+      <span class="papas-price">$9.900</span>
+    </div>
+    <div class="papas-item ripple-container reveal stagger-3">
+      <span>Papas campestre</span>
+      <span class="papas-price">$12.000</span>
+    </div>
+    <div class="papas-item ripple-container reveal stagger-4">
+      <span>Papas BurgerTime</span>
+      <span class="papas-price">$9.600</span>
+    </div>
+    <div class="papas-item ripple-container reveal stagger-5">
+      <span>Papas</span>
+      <span class="papas-price">$7.000</span>
+    </div>
+    <div class="papas-item ripple-container reveal stagger-6">
+      <span>Bastones muzzarella</span>
+      <span class="papas-price">$9.900</span>
+    </div>
+    <div class="papas-item ripple-container reveal stagger-7">
+      <span>Aros de cebolla</span>
+      <span class="papas-price">$8.900</span>
+    </div>
+  </div>
+
+  <div class="divider reveal"></div>
+
+  <!-- EXTRAS -->
+  <div id="extras">
+    <h2 class="section-title reveal">Extras <span class="fire-dot"></span></h2>
+    <div class="extras-grid">
+      <div class="extra-item reveal stagger-1">
+        <span class="extra-name">Queso Cheddar</span>
+        <span class="extra-price">$1.800</span>
+      </div>
+      <div class="extra-item reveal stagger-2">
+        <span class="extra-name">Queso Tybo</span>
+        <span class="extra-price">$1.200</span>
+      </div>
+      <div class="extra-item reveal stagger-3">
+        <span class="extra-name">Queso Azul</span>
+        <span class="extra-price">$2.000</span>
+      </div>
+      <div class="extra-item reveal stagger-4">
+        <span class="extra-name">Queso Provolone</span>
+        <span class="extra-price">$2.500</span>
+      </div>
+      <div class="extra-item reveal stagger-5">
+        <span class="extra-name">Jamón</span>
+        <span class="extra-price">$1.500</span>
+      </div>
+      <div class="extra-item reveal stagger-6">
+        <span class="extra-name">Huevo</span>
+        <span class="extra-price">$600</span>
+      </div>
+      <div class="extra-item reveal stagger-7">
+        <span class="extra-name">Morrones Asados</span>
+        <span class="extra-price">$1.100</span>
+      </div>
+      <div class="extra-item reveal stagger-8">
+        <span class="extra-name">Carne + Queso</span>
+        <span class="extra-price">$2.700</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="reveal">
+  <div class="footer-logo">
+    <img src="./logo.svg" alt="BurgerTime" />
+  </div>
+  <span class="footer-script">Make a Gourmet</span>
+  <p>© 2026 BurgerTime Smash Burger</p>
+  <p style="margin-top:8px;">Hecho en el planeta Tierra por <a href="https://novathek.com.ar" target="_blank" style="color:#aaa;text-decoration:underline;transition:color 0.2s;" onmouseover="this.style.color='#fecf09'" onmouseout="this.style.color='#aaa'">Novathek</a></p>
+</footer>
+
+<!-- WHATSAPP -->
+<a class="wa-btn" href="https://wa.me/3834003945">
+  <span class="material-icons">chat</span>
+</a>
+
+<!-- SCROLL TOP -->
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <span class="material-icons">keyboard_arrow_up</span>
+</button>
+
+<script>
+  // ─── SPLASH ───
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const splash = document.getElementById('splash');
+      splash.classList.add('hide');
+      setTimeout(() => splash.style.display = 'none', 600);
+    }, 1800);
+  });
+
+  // ─── INTERSECTION OBSERVER (scroll reveals — bidireccional) ───
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      } else {
+        entry.target.classList.remove('visible');
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .divider, .section-title').forEach(el => {
+    revealObserver.observe(el);
+  });
+
+  // ─── RIPPLE EFFECT ───
+  document.querySelectorAll('.ripple-container').forEach(el => {
+    el.addEventListener('touchstart', function(e) {
+      const rect = el.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      const ripple = document.createElement('div');
+      ripple.classList.add('ripple');
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${x - size/2}px; top:${y - size/2}px;
+      `;
+      el.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }, { passive: true });
+  });
+
+  // ─── SCROLL TOP BUTTON ───
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('scrollTop');
+    if (window.scrollY > 400) {
+      btn.classList.add('show');
+    } else {
+      btn.classList.remove('show');
+    }
+  }, { passive: true });
+
+  // ─── CATEGORY PILLS active state ───
+  const sections = document.querySelectorAll('#hamburguesas, #lomos, #papas, #extras');
+  const pills = document.querySelectorAll('.cat-pill');
+
+  function updateActivePill() {
+    const offset = 160;
+    let current = sections[0].id;
+    sections.forEach(section => {
+      if (section.getBoundingClientRect().top <= offset) {
+        current = section.id;
+      }
+    });
+    pills.forEach(p => {
+      p.classList.remove('active');
+      if (p.getAttribute('href') === `#${current}`) {
+        p.classList.add('active');
+        p.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActivePill, { passive: true });
+  updateActivePill();
+
+  // ─── SMOOTH SCROLL for pills ───
+  pills.forEach(pill => {
+    pill.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        const offset = 130;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ─── HAPTIC feedback simulation ───
+  document.querySelectorAll('.burger-card, .lomo-card').forEach(card => {
+    card.addEventListener('touchstart', function() {
+      this.classList.add('tapped');
+    }, { passive: true });
+    card.addEventListener('touchend', function() {
+      setTimeout(() => this.classList.remove('tapped'), 400);
+    }, { passive: true });
+  });
+
+  // ─── PARALLAX on scroll ───
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const title = document.querySelector('.page-title');
+        if (title) {
+          title.style.transform = `translateY(${y * 0.15}px) scale(${1 - y * 0.0003})`;
+          title.style.opacity = Math.max(0, 1 - y / 300);
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
