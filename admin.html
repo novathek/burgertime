@@ -1,0 +1,2099 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>BurgerTime — Admin Precios</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Open+Sans:wght@400;600;700;800&family=Pacifico&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      --red: #d9232a;
+      --yellow: #fecf09;
+      --black: #111111;
+      --dark: #1a1a1a;
+      --darker: #141414;
+      --card: #202020;
+      --card2: #252525;
+      --border: rgba(255, 255, 255, 0.07);
+      --gray: #666;
+      --lightgray: #999;
+      --cream: #fdfbf7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--darker);
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(20, 20, 20, 0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-box {
+      background: var(--red);
+      color: white;
+      font-family: 'Anton', sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      transform: skewX(-10deg);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+      display: inline-block;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    .logo-box .yellow {
+      color: var(--yellow);
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-title strong {
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .header-title span {
+      font-family: 'Pacifico', cursive;
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-save {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: 'Anton', sans-serif;
+      font-size: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s;
+      box-shadow: 0 4px 16px rgba(217, 35, 42, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-save::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 24px rgba(217, 35, 42, 0.5);
+    }
+
+    .btn-save:active {
+      transform: scale(0.96);
+    }
+
+    .btn-save .material-icons {
+      font-size: 18px;
+    }
+
+    .btn-export {
+      background: transparent;
+      color: var(--lightgray);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .btn-export:hover {
+      border-color: var(--yellow);
+      color: var(--yellow);
+      background: rgba(254, 207, 9, 0.05);
+    }
+
+    .btn-export .material-icons {
+      font-size: 16px;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.4s forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--red);
+    }
+
+    .stat-card:nth-child(2)::before {
+      background: var(--yellow);
+    }
+
+    .stat-card:nth-child(3)::before {
+      background: linear-gradient(90deg, var(--red), var(--yellow));
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-family: 'Anton', sans-serif;
+      font-size: 28px;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .stat-value.red {
+      color: var(--red);
+    }
+
+    .stat-value.yellow {
+      color: var(--yellow);
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    /* ── CAT TABS ── */
+    .cat-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.5s forwards;
+    }
+
+    .cat-tab {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 7px 18px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      color: var(--lightgray);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+    }
+
+    .cat-tab:hover {
+      border-color: var(--red);
+      color: white;
+    }
+
+    .cat-tab.active {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+      box-shadow: 0 4px 14px rgba(217, 35, 42, 0.35);
+      transform: scale(1.04);
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(217, 35, 42, 0.4);
+      }
+
+      50% {
+        transform: scale(1.3);
+        opacity: 0.8;
+        box-shadow: 0 0 0 6px rgba(217, 35, 42, 0);
+      }
+    }
+
+    .section-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ── PRICE TABLE ── */
+    .price-section {
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease var(--delay, 0.6s) forwards;
+    }
+
+    .price-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .price-row:hover {
+      border-color: rgba(217, 35, 42, 0.3);
+      background: var(--card2);
+      transform: translateX(3px);
+    }
+
+    .price-row.modified {
+      border-color: var(--yellow);
+      background: rgba(254, 207, 9, 0.04);
+    }
+
+    .price-row.modified::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--yellow);
+      border-radius: 3px 0 0 3px;
+    }
+
+    .item-info {
+      min-width: 0;
+    }
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .item-desc {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      background: var(--red);
+      color: white;
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    /* ── PRICE INPUT ── */
+    .price-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--darker);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .price-input-wrap:focus-within {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(254, 207, 9, 0.1);
+    }
+
+    .price-prefix {
+      font-family: 'Anton', sans-serif;
+      font-size: 13px;
+      color: var(--gray);
+      padding: 0 8px 0 10px;
+      user-select: none;
+    }
+
+    .price-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--yellow);
+      font-family: 'Anton', sans-serif;
+      font-size: 17px;
+      width: 90px;
+      padding: 8px 10px 8px 0;
+      text-align: right;
+      letter-spacing: 0.5px;
+    }
+
+    .price-input::placeholder {
+      color: var(--gray);
+    }
+
+    /* Number input arrows hidden */
+    .price-input::-webkit-inner-spin-button,
+    .price-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .price-input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    /* ── QUICK ADJUST BUTTONS ── */
+    .quick-btns {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .qbtn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card2);
+      color: var(--lightgray);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+
+    .qbtn:hover {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+      transform: scale(1.1);
+    }
+
+    .qbtn:active {
+      transform: scale(0.9);
+    }
+
+    .qbtn.up:hover {
+      background: #1a7a3c;
+      border-color: #1a7a3c;
+    }
+
+    /* ── DELETE BTN on row ── */
+    .qbtn.del:hover {
+      background: #7a1a1a;
+      border-color: #a02020;
+    }
+
+    .qbtn.del .material-icons {
+      font-size: 15px;
+    }
+
+    /* ── ADD PRODUCT BTN (header) ── */
+    .btn-add {
+      background: var(--yellow);
+      color: var(--black);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: 'Anton', sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s;
+      box-shadow: 0 4px 14px rgba(254, 207, 9, 0.3);
+      white-space: nowrap;
+    }
+
+    .btn-add:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 20px rgba(254, 207, 9, 0.45);
+    }
+
+    .btn-add:active {
+      transform: scale(0.96);
+    }
+
+    .btn-add .material-icons {
+      font-size: 18px;
+    }
+
+    /* ── MODAL OVERLAY ── */
+    #modalOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #modalOverlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 460px;
+      padding: 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    #modalOverlay.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .modal-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-title-accent {
+      width: 6px;
+      height: 28px;
+      background: var(--yellow);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .modal-close {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--lightgray);
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover {
+      background: rgba(217, 35, 42, 0.2);
+      color: white;
+      border-color: var(--red);
+    }
+
+    .modal-close .material-icons {
+      font-size: 18px;
+    }
+
+    .modal-field {
+      margin-bottom: 16px;
+    }
+
+    .modal-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+
+    .modal-input {
+      width: 100%;
+      background: var(--darker);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .modal-input:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(254, 207, 9, 0.1);
+    }
+
+    .modal-input::placeholder {
+      color: var(--gray);
+      font-weight: 400;
+    }
+
+    /* price input inside modal */
+    .modal-price-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--darker);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .modal-price-wrap:focus-within {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(254, 207, 9, 0.1);
+    }
+
+    .modal-price-prefix {
+      font-family: 'Anton', sans-serif;
+      font-size: 15px;
+      color: var(--gray);
+      padding: 0 10px 0 14px;
+      user-select: none;
+    }
+
+    .modal-price-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--yellow);
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      padding: 11px 14px 11px 0;
+      width: 100%;
+    }
+
+    .modal-price-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .modal-price-input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    /* category selector */
+    .modal-cat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .modal-cat-opt {
+      background: var(--darker);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--lightgray);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      text-align: center;
+      user-select: none;
+    }
+
+    .modal-cat-opt:hover {
+      border-color: var(--yellow);
+      color: white;
+    }
+
+    .modal-cat-opt.selected {
+      background: rgba(254, 207, 9, 0.1);
+      border-color: var(--yellow);
+      color: var(--yellow);
+      transform: scale(1.03);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .btn-modal-cancel {
+      flex: 1;
+      background: var(--darker);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--lightgray);
+      padding: 12px;
+      font-family: 'Anton', sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-cancel:hover {
+      border-color: var(--red);
+      color: white;
+    }
+
+    .btn-modal-submit {
+      flex: 2;
+      background: var(--yellow);
+      color: var(--black);
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'Anton', sans-serif;
+      font-size: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s;
+      box-shadow: 0 4px 14px rgba(254, 207, 9, 0.3);
+    }
+
+    .btn-modal-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(254, 207, 9, 0.4);
+    }
+
+    .btn-modal-submit:active {
+      transform: scale(0.97);
+    }
+
+    .btn-modal-submit .material-icons {
+      font-size: 18px;
+    }
+
+    /* ── CONFIRM DELETE MODAL ── */
+    #confirmOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(6px);
+      z-index: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    #confirmOverlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .confirm-modal {
+      background: var(--card);
+      border: 1px solid rgba(217, 35, 42, 0.3);
+      border-radius: 18px;
+      max-width: 360px;
+      width: 100%;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transform: scale(0.88);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    #confirmOverlay.open .confirm-modal {
+      transform: scale(1);
+    }
+
+    .confirm-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(217, 35, 42, 0.12);
+      border: 2px solid rgba(217, 35, 42, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .confirm-icon .material-icons {
+      font-size: 28px;
+      color: var(--red);
+    }
+
+    .confirm-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .confirm-msg {
+      font-size: 13px;
+      color: var(--lightgray);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .confirm-name {
+      color: white;
+      font-weight: 800;
+    }
+
+    .confirm-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-confirm-no {
+      flex: 1;
+      background: var(--darker);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--lightgray);
+      padding: 12px;
+      font-family: 'Anton', sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-confirm-no:hover {
+      border-color: var(--border);
+      color: white;
+    }
+
+    .btn-confirm-yes {
+      flex: 1;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'Anton', sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(217, 35, 42, 0.4);
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-confirm-yes:hover {
+      transform: scale(1.04);
+    }
+
+    .btn-confirm-yes:active {
+      transform: scale(0.97);
+    }
+
+
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card);
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 12px 24px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 999;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #toast .material-icons {
+      font-size: 18px;
+      color: #4caf50;
+    }
+
+    #toast.warn .material-icons {
+      color: var(--yellow);
+    }
+
+    /* ── UNSAVED BADGE ── */
+    .unsaved-badge {
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      display: none;
+      animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .unsaved-badge.show {
+      display: inline-block;
+    }
+
+    @keyframes badgePop {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+
+
+    /* ── MODIFIED COUNT ── */
+    .mod-count {
+      font-size: 11px;
+      color: var(--yellow);
+      font-weight: 800;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .stats-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stats-bar .stat-card:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .price-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .price-row .quick-btns {
+        justify-content: flex-end;
+      }
+
+      header {
+        padding: 12px 16px;
+      }
+
+      main {
+        padding: 24px 16px 80px;
+      }
+    }
+
+    /* ── SPLASH ── */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    #splash .logo-wrap {
+      transform: scale(0) rotate(-20deg);
+      opacity: 0;
+      animation: splashPop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+      text-align: center;
+    }
+
+    @keyframes splashPop {
+      to {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    #splash .splash-logo-box {
+      background: var(--red);
+      color: white;
+      font-family: 'Anton', sans-serif;
+      font-size: 56px;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+      padding: 10px 28px;
+      transform: skewX(-10deg);
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.1);
+      display: inline-block;
+      line-height: 1.1;
+    }
+
+    #splash .splash-logo-box .y {
+      color: var(--yellow);
+    }
+
+    #splash .splash-sub {
+      background: white;
+      color: black;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      padding: 4px 20px;
+      border-radius: 20px;
+      display: block;
+      margin-top: -4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #splash .splash-tag {
+      font-family: 'Pacifico', cursive;
+      color: var(--red);
+      font-size: 18px;
+      margin-top: 14px;
+      opacity: 0;
+      display: block;
+      animation: fadeUpS 0.5s ease 0.9s forwards;
+    }
+
+    #splash .splash-loading {
+      margin-top: 32px;
+      opacity: 0;
+      animation: fadeUpS 0.4s ease 1s forwards;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #splash .splash-loading-text {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--gray);
+    }
+
+    #splash .splash-bar-track {
+      width: 160px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    #splash .splash-bar-fill {
+      height: 100%;
+      background: var(--red);
+      width: 0;
+      border-radius: 3px;
+      animation: splashBarFill 1.4s ease 0.6s forwards;
+    }
+
+    @keyframes splashBarFill {
+      0% {
+        width: 0;
+      }
+
+      60% {
+        width: 80%;
+      }
+
+      100% {
+        width: 100%;
+      }
+    }
+
+    @keyframes fadeUpS {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #splash.hide {
+      animation: splashOut 0.55s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+    }
+
+    @keyframes splashOut {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-100%);
+      }
+    }
+
+    /* ── LOGIN ── */
+    #loginScreen {
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #loginScreen.hide {
+      animation: splashOut 0.55s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      opacity: 0;
+      animation: fadeUpS 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) 0.2s forwards;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-logo-box {
+      background: var(--red);
+      color: white;
+      font-family: 'Anton', sans-serif;
+      font-size: 42px;
+      letter-spacing: -1.5px;
+      text-transform: uppercase;
+      padding: 8px 22px;
+      transform: skewX(-10deg);
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+      display: inline-block;
+      line-height: 1.1;
+    }
+
+    .login-logo-box .y {
+      color: var(--yellow);
+    }
+
+    .login-logo-sub {
+      background: white;
+      color: black;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      padding: 3px 16px;
+      border-radius: 20px;
+      display: block;
+      margin: -3px auto 0;
+      width: fit-content;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-logo-tag {
+      font-family: 'Pacifico', cursive;
+      color: var(--red);
+      font-size: 16px;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .login-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+      font-size: 12px;
+      color: var(--gray);
+      text-align: center;
+      margin-bottom: 28px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .login-field {
+      margin-bottom: 14px;
+    }
+
+    .login-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+
+    .login-input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .login-input-wrap:focus-within {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(217, 35, 42, 0.15);
+    }
+
+    .login-input-wrap .material-icons {
+      font-size: 18px;
+      color: var(--gray);
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    .login-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      width: 100%;
+      padding: 13px 14px 13px 0;
+    }
+
+    .login-input::placeholder {
+      color: var(--gray);
+      font-weight: 400;
+    }
+
+    .login-toggle {
+      background: none;
+      border: none;
+      color: var(--gray);
+      cursor: pointer;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    .login-toggle:hover {
+      color: white;
+    }
+
+    .login-toggle .material-icons {
+      font-size: 18px;
+    }
+
+    .login-error {
+      background: rgba(217, 35, 42, 0.12);
+      border: 1px solid rgba(217, 35, 42, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff6b6b;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      animation: shakeX 0.4s ease forwards;
+    }
+
+    .login-error.show {
+      display: flex;
+    }
+
+    .login-error .material-icons {
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    @keyframes shakeX {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-8px);
+      }
+
+      40% {
+        transform: translateX(8px);
+      }
+
+      60% {
+        transform: translateX(-5px);
+      }
+
+      80% {
+        transform: translateX(5px);
+      }
+    }
+
+    .btn-login {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s;
+      box-shadow: 0 6px 20px rgba(217, 35, 42, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(217, 35, 42, 0.55);
+    }
+
+    .btn-login:active {
+      transform: scale(0.97);
+    }
+
+    .btn-login .material-icons {
+      font-size: 20px;
+    }
+
+    .login-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0 16px;
+    }
+
+    .login-footer-text {
+      text-align: center;
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    /* app hidden until login */
+    #appWrapper {
+      display: none;
+    }
+
+    #appWrapper.visible {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-box"><span class="y">Burger</span>Time</div>
+        <span class="login-logo-sub">Admin Panel</span>
+        <span class="login-logo-tag">Panel de Precios</span>
+      </div>
+
+      <div class="login-title">Acceso</div>
+      <div class="login-subtitle">Ingresá tus credenciales</div>
+
+      <div class="login-error" id="loginError">
+        <span class="material-icons">error_outline</span>
+        Usuario o contraseña incorrectos
+      </div>
+
+      <div class="login-field">
+        <label>Usuario</label>
+        <div class="login-input-wrap">
+          <span class="material-icons">person</span>
+          <input class="login-input" id="loginUser" type="text" placeholder="usuario" autocomplete="username" />
+        </div>
+      </div>
+
+      <div class="login-field">
+        <label>Contraseña</label>
+        <div class="login-input-wrap">
+          <span class="material-icons">lock</span>
+          <input class="login-input" id="loginPass" type="password" placeholder="••••••••"
+            autocomplete="current-password" />
+          <button class="login-toggle" onclick="togglePass()" id="togglePassBtn" type="button">
+            <span class="material-icons" id="eyeIcon">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-login" onclick="doLogin()">
+        <span class="material-icons">login</span>
+        Ingresar
+      </button>
+
+      <div class="login-divider"></div>
+      <p class="login-footer-text">© 2026 BurgerTime · Novathek</p>
+    </div>
+  </div>
+
+  <!-- APP WRAPPER -->
+  <div id="appWrapper">
+
+    <!-- SPLASH -->
+    <div id="splash">
+      <div class="logo-wrap">
+        <div class="splash-logo-box"><span class="y">Burger</span>Time</div>
+        <span class="splash-sub">Admin Panel</span>
+        <span class="splash-tag">Panel de Precios</span>
+        <div class="splash-loading">
+          <div class="splash-bar-track">
+            <div class="splash-bar-fill"></div>
+          </div>
+          <span class="splash-loading-text">Cargando menú...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="header-inner">
+        <div class="header-left">
+          <div class="logo-box"><span class="yellow">B</span>T</div>
+          <div class="header-title">
+            <strong>Panel de Precios</strong>
+            <span>Admin · BurgerTime</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="unsaved-badge" id="unsavedBadge">Sin guardar</span>
+          <button class="btn-add" onclick="openAddModal()">
+            <span class="material-icons">add</span>
+            Agregar
+          </button>
+          <button class="btn-export" onclick="exportJSON()">
+            <span class="material-icons">download</span>
+            Exportar
+          </button>
+          <button class="btn-save" onclick="saveAll()">
+            <span class="material-icons">save</span>
+            Guardar
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- STATS -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-label">Total items</div>
+          <div class="stat-value" id="statTotal">31</div>
+          <div class="stat-sub">productos en el menú</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Modificados</div>
+          <div class="stat-value yellow" id="statMod">0</div>
+          <div class="stat-sub">cambios sin guardar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Precio promedio</div>
+          <div class="stat-value red" id="statAvg">$13.200</div>
+          <div class="stat-sub">hamburguesas</div>
+        </div>
+      </div>
+
+      <!-- CAT TABS -->
+      <div class="cat-tabs">
+        <button class="cat-tab active" onclick="filterCat('all', this)">🍽 Todos</button>
+        <button class="cat-tab" onclick="filterCat('hamburguesas', this)">🍔 Hamburguesas</button>
+        <button class="cat-tab" onclick="filterCat('lomos', this)">🥩 Lomos</button>
+        <button class="cat-tab" onclick="filterCat('papas', this)">🍟 Papas & Entradas</button>
+        <button class="cat-tab" onclick="filterCat('extras', this)">➕ Extras</button>
+      </div>
+
+      <!-- SECTIONS CONTAINER -->
+      <div id="sectionsContainer"></div>
+
+    </main>
+
+    <!-- ADD PRODUCT MODAL -->
+    <div id="modalOverlay" onclick="handleOverlayClick(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <div class="modal-title-accent"></div>
+            Nuevo Producto
+          </div>
+          <button class="modal-close" onclick="closeAddModal()">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <div class="modal-field">
+          <label>Nombre del producto</label>
+          <input class="modal-input" id="newName" type="text" placeholder="Ej: Burger Especial" />
+        </div>
+
+        <div class="modal-field">
+          <label>Descripción (ingredientes)</label>
+          <input class="modal-input" id="newDesc" type="text"
+            placeholder="Ej: Pan artesanal, doble smash, cheddar..." />
+        </div>
+
+        <div class="modal-field">
+          <label>Precio</label>
+          <div class="modal-price-wrap">
+            <span class="modal-price-prefix">$</span>
+            <input class="modal-price-input" id="newPrice" type="number" placeholder="0" min="0" />
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label>Categoría</label>
+          <div class="modal-cat-grid">
+            <div class="modal-cat-opt" onclick="selectCat('hamburguesas', this)">🍔 Hamburguesas</div>
+            <div class="modal-cat-opt" onclick="selectCat('lomos', this)">🥩 Lomos</div>
+            <div class="modal-cat-opt" onclick="selectCat('papas', this)">🍟 Papas & Entradas</div>
+            <div class="modal-cat-opt" onclick="selectCat('extras', this)">➕ Extras</div>
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label>Badge (opcional)</label>
+          <input class="modal-input" id="newBadge" type="text" placeholder="Ej: Popular, 🔥, Nuevo..." />
+        </div>
+
+        <div id="modalError" style="color:#ff6b6b;font-size:12px;font-weight:700;margin-top:-8px;display:none;"></div>
+
+        <div class="modal-footer">
+          <button class="btn-modal-cancel" onclick="closeAddModal()">Cancelar</button>
+          <button class="btn-modal-submit" onclick="submitNewProduct()">
+            <span class="material-icons">add_circle</span>
+            Agregar al Menú
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIRM DELETE MODAL -->
+    <div id="confirmOverlay" onclick="handleConfirmOverlayClick(event)">
+      <div class="confirm-modal">
+        <div class="confirm-icon">
+          <span class="material-icons">delete_forever</span>
+        </div>
+        <div class="confirm-title">Eliminar</div>
+        <p class="confirm-msg">¿Seguro que querés eliminar <span class="confirm-name" id="confirmItemName"></span>? Esta
+          acción no se puede deshacer.</p>
+        <div class="confirm-btns">
+          <button class="btn-confirm-no" onclick="closeConfirm()">Cancelar</button>
+          <button class="btn-confirm-yes" onclick="confirmDelete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /appWrapper -->
+
+  <!-- TOAST -->
+  <div id="toast">
+    <span class="material-icons">check_circle</span>
+    <span id="toastMsg">Guardado correctamente</span>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+     FIREBASE SDK — Admin con Auth + Firestore
+     ⚠️  Reemplazá los valores de firebaseConfig con los tuyos
+═══════════════════════════════════════════════════════ -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    // ── CONFIGURACIÓN FIREBASE ────────────────────────────────
+    // Reemplazá estos valores con los de tu proyecto Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD3AyAby5RLCuLtFibj9WbAiXaTYI7Bw_I",
+      authDomain: "burgertime-557ff.firebaseapp.com",
+      projectId: "burgertime-557ff",
+      storageBucket: "burgertime-557ff.firebasestorage.app",
+      messagingSenderId: "508201509894",
+      appId: "1:508201509894:web:d966ce06b330930b658f87",
+      measurementId: "G-VCV1M05D3Y"
+    };
+    // ─────────────────────────────────────────────────────────
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ── ESTADO GLOBAL ─────────────────────────────────────────
+    window.menuData = {};
+    window.originalPrices = {};
+    window.currentPrices = {};
+    window.currentFilter = 'all';
+    window.selectedCat = null;
+    window.pendingDeleteId = null;
+
+    // ── LOGIN ─────────────────────────────────────────────────
+    window.doLogin = async function () {
+      const email = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      const err = document.getElementById('loginError');
+      const btn = document.querySelector('.btn-login');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-icons">hourglass_top</span> Ingresando...';
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (e) {
+        err.classList.remove('show');
+        void err.offsetWidth;
+        err.classList.add('show');
+        document.getElementById('loginPass').value = '';
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons">login</span> Ingresar';
+      }
+    };
+
+    window.togglePass = function () {
+      const input = document.getElementById('loginPass');
+      const icon = document.getElementById('eyeIcon');
+      if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; }
+      else { input.type = 'password'; icon.textContent = 'visibility'; }
+    };
+
+    window.doLogout = async function () { await signOut(auth); };
+
+    document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPass').focus(); });
+    document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
+
+    // ── AUTH STATE ────────────────────────────────────────────
+    onAuthStateChanged(auth, async (user) => {
+      const loginScreen = document.getElementById('loginScreen');
+      const appWrapper = document.getElementById('appWrapper');
+      if (user) {
+        loginScreen.classList.add('hide');
+        setTimeout(() => { loginScreen.style.display = 'none'; appWrapper.classList.add('visible'); }, 560);
+        await loadMenu();
+      } else {
+        loginScreen.style.display = '';
+        loginScreen.classList.remove('hide');
+        appWrapper.classList.remove('visible');
+      }
+    });
+
+    // ── SPLASH ────────────────────────────────────────────────
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        splash.classList.add('hide');
+        setTimeout(() => splash.style.display = 'none', 600);
+      }, 2000);
+    });
+
+    // ── CARGAR MENÚ DESDE FIRESTORE ───────────────────────────
+    async function loadMenu() {
+      try {
+        const cats = ['hamburguesas', 'lomos', 'papas', 'extras'];
+        const snaps = await Promise.all(cats.map(c => getDoc(doc(db, 'menu', c))));
+        snaps.forEach((snap, i) => {
+          const key = cats[i];
+          window.menuData[key] = snap.exists()
+            ? { label: snap.data().label, items: snap.data().items || [] }
+            : { label: key, items: [] };
+        });
+        window.originalPrices = {};
+        window.currentPrices = {};
+        Object.values(window.menuData).forEach(cat => {
+          cat.items.forEach(item => {
+            window.originalPrices[item.id] = item.price;
+            window.currentPrices[item.id] = item.price;
+          });
+        });
+        const total = Object.values(window.menuData).reduce((s, c) => s + c.items.length, 0);
+        document.getElementById('statTotal').textContent = total;
+        window.render();
+      } catch (err) {
+        console.error('Error cargando menu:', err);
+        window.showToast('Error al cargar el menú', 'warn');
+      }
+    }
+
+    // ── GUARDAR EN FIRESTORE ──────────────────────────────────
+    async function saveToFirestore() {
+      const btn = document.querySelector('.btn-save');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-icons">hourglass_top</span> Guardando...';
+      try {
+        await Promise.all(Object.keys(window.menuData).map(key => {
+          const cat = window.menuData[key];
+          const items = cat.items.map(item => ({ ...item, price: window.currentPrices[item.id] ?? item.price }));
+          return setDoc(doc(db, 'menu', key), { label: cat.label, items });
+        }));
+        Object.keys(window.currentPrices).forEach(id => {
+          window.originalPrices[id] = window.currentPrices[id];
+          Object.values(window.menuData).forEach(cat => {
+            const item = cat.items.find(i => i.id === id);
+            if (item) item.price = window.currentPrices[id];
+          });
+        });
+        window.render();
+        document.getElementById('unsavedBadge').classList.remove('show');
+        window.showToast('¡Precios guardados en la nube! ☁️');
+      } catch (err) {
+        console.error('Error guardando:', err);
+        window.showToast('Error al guardar. Revisá tu conexión.', 'warn');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-icons">save</span> Guardar';
+      }
+    }
+    window.saveAll = saveToFirestore;
+
+    // ── RENDER ────────────────────────────────────────────────
+    window.render = function () {
+      const { menuData, currentPrices, originalPrices, currentFilter } = window;
+      const container = document.getElementById('sectionsContainer');
+      container.innerHTML = '';
+      const delays = ['0.6s', '0.65s', '0.7s', '0.75s'];
+      let di = 0;
+      Object.entries(menuData).forEach(([catKey, cat]) => {
+        if (currentFilter !== 'all' && currentFilter !== catKey) return;
+        const section = document.createElement('div');
+        section.className = 'price-section';
+        section.style.setProperty('--delay', delays[di++ % delays.length]);
+        const modCount = cat.items.filter(i => currentPrices[i.id] !== originalPrices[i.id]).length;
+        section.innerHTML = `
+        <div class="section-header">
+          <div class="section-title"><span class="dot"></span>${cat.label}</div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            ${modCount > 0 ? `<span class="mod-count">${modCount} modificado${modCount > 1 ? 's' : ''}</span>` : ''}
+            <span class="section-count">${cat.items.length} items</span>
+          </div>
+        </div>`;
+        cat.items.forEach(item => {
+          const isMod = currentPrices[item.id] !== originalPrices[item.id];
+          const row = document.createElement('div');
+          row.className = `price-row${isMod ? ' modified' : ''}`;
+          row.id = `row-${item.id}`;
+          const safeName = item.name.replace(/'/g, "\\'");
+          row.innerHTML = `
+          <div class="item-info">
+            <div class="item-name">${item.name}${item.badge ? `<span class="badge">${item.badge}</span>` : ''}</div>
+            ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
+          </div>
+          <div class="price-input-wrap">
+            <span class="price-prefix">$</span>
+            <input class="price-input" type="number" id="input-${item.id}" value="${currentPrices[item.id]}" min="0"
+              oninput="onPriceChange('${item.id}',this.value)"/>
+          </div>
+          <div class="quick-btns">
+            <button class="qbtn" onclick="nudgePrice('${item.id}',-100)">−</button>
+            <button class="qbtn up" onclick="nudgePrice('${item.id}',100)">+</button>
+            <button class="qbtn del" onclick="askDelete('${item.id}','${safeName}')">
+              <span class="material-icons">delete</span>
+            </button>
+          </div>`;
+          section.appendChild(row);
+        });
+        container.appendChild(section);
+      });
+      updateStats();
+    };
+
+    // ── PRICE CHANGE ──────────────────────────────────────────
+    window.onPriceChange = function (id, val) {
+      const n = parseInt(val) || 0;
+      window.currentPrices[id] = n;
+      const row = document.getElementById(`row-${id}`);
+      if (row) {
+        if (n !== window.originalPrices[id]) row.classList.add('modified');
+        else row.classList.remove('modified');
+      }
+      updateStats();
+    };
+    window.nudgePrice = function (id, delta) {
+      const input = document.getElementById(`input-${id}`);
+      const newVal = Math.max(0, (window.currentPrices[id] || 0) + delta);
+      window.currentPrices[id] = newVal;
+      input.value = newVal;
+      window.onPriceChange(id, newVal);
+      input.parentElement.style.transform = 'scale(1.06)';
+      setTimeout(() => input.parentElement.style.transform = '', 200);
+    };
+
+    // ── STATS ─────────────────────────────────────────────────
+    function updateStats() {
+      const { currentPrices, originalPrices, menuData } = window;
+      const modCount = Object.keys(currentPrices).filter(id => currentPrices[id] !== originalPrices[id]).length;
+      document.getElementById('statMod').textContent = modCount;
+      const badge = document.getElementById('unsavedBadge');
+      if (modCount > 0) badge.classList.add('show'); else badge.classList.remove('show');
+      const burgs = (menuData.hamburguesas || { items: [] }).items;
+      if (burgs.length) {
+        const avg = Math.round(burgs.reduce((s, i) => s + (currentPrices[i.id] || 0), 0) / burgs.length);
+        document.getElementById('statAvg').textContent = '$' + avg.toLocaleString('es-AR');
+      }
+    }
+
+    // ── FILTER ────────────────────────────────────────────────
+    window.filterCat = function (cat, el) {
+      window.currentFilter = cat;
+      document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      window.render();
+    };
+
+    // ── EXPORT JSON ───────────────────────────────────────────
+    window.exportJSON = function () {
+      const output = {};
+      Object.entries(window.menuData).forEach(([k, cat]) => {
+        output[k] = cat.items.map(i => ({ id: i.id, name: i.name, price: window.currentPrices[i.id] }));
+      });
+      const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'burgertime-precios.json';
+      a.click();
+      window.showToast('JSON exportado');
+    };
+
+    // ── TOAST ─────────────────────────────────────────────────
+    let toastTimer;
+    window.showToast = function (msg, type = '') {
+      const toast = document.getElementById('toast');
+      const icon = toast.querySelector('.material-icons');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.className = type === 'warn' ? 'warn' : '';
+      icon.textContent = type === 'warn' ? 'warning' : 'check_circle';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    };
+
+    // ── ADD PRODUCT ───────────────────────────────────────────
+    window.openAddModal = function () {
+      window.selectedCat = null;
+      ['newName', 'newDesc', 'newPrice', 'newBadge'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('modalError').style.display = 'none';
+      document.querySelectorAll('.modal-cat-opt').forEach(o => o.classList.remove('selected'));
+      document.getElementById('modalOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('newName').focus(), 200);
+    };
+    window.closeAddModal = function () { document.getElementById('modalOverlay').classList.remove('open'); };
+    window.handleOverlayClick = function (e) { if (e.target === document.getElementById('modalOverlay')) window.closeAddModal(); };
+    window.selectCat = function (cat, el) {
+      window.selectedCat = cat;
+      document.querySelectorAll('.modal-cat-opt').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    };
+    window.submitNewProduct = async function () {
+      const name = document.getElementById('newName').value.trim();
+      const desc = document.getElementById('newDesc').value.trim();
+      const price = parseInt(document.getElementById('newPrice').value) || 0;
+      const badge = document.getElementById('newBadge').value.trim();
+      const cat = window.selectedCat;
+      const errEl = document.getElementById('modalError');
+      if (!name) { errEl.textContent = '⚠ El nombre es obligatorio'; errEl.style.display = 'block'; return; }
+      if (!cat) { errEl.textContent = '⚠ Seleccioná una categoría'; errEl.style.display = 'block'; return; }
+      if (price <= 0) { errEl.textContent = '⚠ Ingresá un precio válido'; errEl.style.display = 'block'; return; }
+      errEl.style.display = 'none';
+      const prefix = { hamburguesas: 'h', lomos: 'l', papas: 'p', extras: 'e' }[cat];
+      const existing = window.menuData[cat].items.map(i => parseInt(i.id.replace(prefix, ''))).filter(n => !isNaN(n));
+      const newId = prefix + (existing.length ? Math.max(...existing) + 1 : 1);
+      const newItem = { id: newId, name, price, desc };
+      if (badge) newItem.badge = badge;
+      window.menuData[cat].items.push(newItem);
+      window.originalPrices[newId] = price;
+      window.currentPrices[newId] = price;
+      document.getElementById('statTotal').textContent = Object.values(window.menuData).reduce((s, c) => s + c.items.length, 0);
+      window.closeAddModal();
+      window.currentFilter = cat;
+      document.querySelectorAll('.cat-tab').forEach(t => {
+        t.classList.remove('active');
+        const label = { hamburguesas: 'Hamburguesas', lomos: 'Lomos', papas: 'Papas', extras: 'Extras' }[cat];
+        if (t.textContent.includes(label)) t.classList.add('active');
+      });
+      window.render();
+      window.showToast(`✓ "${name}" agregado al menú`);
+      setTimeout(() => {
+        const row = document.getElementById(`row-${newId}`);
+        if (row) {
+          row.style.borderColor = 'var(--yellow)'; row.style.background = 'rgba(254,207,9,0.06)';
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => { row.style.borderColor = ''; row.style.background = ''; }, 2000);
+        }
+      }, 100);
+      try {
+        await setDoc(doc(db, 'menu', cat), { label: window.menuData[cat].label, items: window.menuData[cat].items });
+      } catch (e) { window.showToast('Producto local. Guardá para sincronizar.', 'warn'); }
+    };
+
+    // ── DELETE ────────────────────────────────────────────────
+    window.askDelete = function (id, name) {
+      window.pendingDeleteId = id;
+      document.getElementById('confirmItemName').textContent = `"${name}"`;
+      document.getElementById('confirmOverlay').classList.add('open');
+    };
+    window.closeConfirm = function () {
+      window.pendingDeleteId = null;
+      document.getElementById('confirmOverlay').classList.remove('open');
+    };
+    window.handleConfirmOverlayClick = function (e) {
+      if (e.target === document.getElementById('confirmOverlay')) window.closeConfirm();
+    };
+    window.confirmDelete = async function () {
+      if (!window.pendingDeleteId) return;
+      const id = window.pendingDeleteId;
+      let deletedName = '', deletedCat = null;
+      Object.entries(window.menuData).forEach(([key, cat]) => {
+        const idx = cat.items.findIndex(i => i.id === id);
+        if (idx !== -1) { deletedName = cat.items[idx].name; cat.items.splice(idx, 1); deletedCat = key; }
+      });
+      delete window.originalPrices[id];
+      delete window.currentPrices[id];
+      document.getElementById('statTotal').textContent = Object.values(window.menuData).reduce((s, c) => s + c.items.length, 0);
+      window.closeConfirm();
+      window.render();
+      window.showToast(`"${deletedName}" eliminado`, 'warn');
+      if (deletedCat) {
+        try {
+          await setDoc(doc(db, 'menu', deletedCat), { label: window.menuData[deletedCat].label, items: window.menuData[deletedCat].items });
+        } catch (e) { console.error('Error eliminando en Firestore:', e); }
+      }
+    };
+
+  </script>
+</body>
+
+</html>
