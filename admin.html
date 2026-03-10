@@ -1822,6 +1822,13 @@
     });
 
     // ── CARGAR MENÚ DESDE FIRESTORE ───────────────────────────
+    const defaultLabels = {
+      hamburguesas: '🍔 Hamburguesas de Vacío',
+      lomos: '🥩 Lomos',
+      papas: '🍟 Papas & Entradas',
+      extras: '➕ Extras'
+    };
+
     async function loadMenu() {
       try {
         const cats = ['hamburguesas', 'lomos', 'papas', 'extras'];
@@ -1829,8 +1836,8 @@
         snaps.forEach((snap, i) => {
           const key = cats[i];
           window.menuData[key] = snap.exists()
-            ? { label: snap.data().label, items: snap.data().items || [] }
-            : { label: key, items: [] };
+            ? { label: snap.data().label || defaultLabels[key], items: snap.data().items || [] }
+            : { label: defaultLabels[key], items: [] };
         });
         window.originalPrices = {};
         window.currentPrices = {};
@@ -1857,8 +1864,9 @@
       try {
         await Promise.all(Object.keys(window.menuData).map(key => {
           const cat = window.menuData[key];
+          const label = cat.label || defaultLabels[key] || key;
           const items = cat.items.map(item => ({ ...item, price: window.currentPrices[item.id] ?? item.price }));
-          return setDoc(doc(db, 'menu', key), { label: cat.label, items });
+          return setDoc(doc(db, 'menu', key), { label, items });
         }));
         Object.keys(window.currentPrices).forEach(id => {
           window.originalPrices[id] = window.currentPrices[id];
