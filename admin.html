@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -176,36 +176,7 @@
       transform: scale(0.96);
     }
 
-    .btn-save .material-icons {
-      font-size: 18px;
-    }
 
-    .btn-export {
-      background: transparent;
-      color: var(--lightgray);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.2s;
-    }
-
-    .btn-export:hover {
-      border-color: var(--yellow);
-      color: var(--yellow);
-      background: rgba(254, 207, 9, 0.05);
-    }
-
-    .btn-export .material-icons {
-      font-size: 16px;
-    }
 
     /* ── MAIN ── */
     main {
@@ -1515,6 +1486,192 @@
     #appWrapper.visible {
       display: block;
     }
+
+    /* ── CARRITO TOGGLE CARD ── */
+    .carrito-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.45s forwards;
+      position: relative;
+      overflow: hidden;
+    }
+    .carrito-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #25D366, #128C7E);
+    }
+    .carrito-card-left {
+      flex: 1;
+    }
+    .carrito-card-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .carrito-card-title .icon-wa {
+      color: var(--yellow);
+    }
+    .carrito-card-desc {
+      font-size: 11px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+    .carrito-status {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 6px;
+    }
+    .carrito-status.on { color: #25D366; }
+    .carrito-status.off { color: var(--gray); }
+
+    /* Card de Horarios (similar a carrito) */
+    .horarios-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.45s forwards;
+    }
+    .horarios-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--red);
+    }
+    .horarios-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .horarios-header .material-icons {
+      color: var(--red);
+    }
+    .horarios-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: white;
+    }
+    .horarios-body {
+      display: flex;
+      gap: 16px;
+    }
+    .horario-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .horario-field label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .horario-input {
+      width: 100%;
+      background: var(--darker);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color-scheme: dark;
+    }
+    .horario-input:focus { 
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(254, 207, 9, 0.1);
+    }
+    .btn-save-horarios {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn-save-horarios:active { transform: scale(0.97); }
+
+    /* Toggle switch iOS */
+    .toggle-wrap {
+      flex-shrink: 0;
+    }
+    .toggle-switch {
+      display: none;
+    }
+    .toggle-label {
+      display: block;
+      width: 52px;
+      height: 30px;
+      background: var(--darker);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 15px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s ease, border-color 0.3s;
+    }
+    .toggle-label::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 22px;
+      height: 22px;
+      background: #666;
+      border-radius: 50%;
+      transition: left 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+    .toggle-switch:checked + .toggle-label {
+      background: #25D366;
+      border-color: #25D366;
+    }
+    .toggle-switch:checked + .toggle-label::after {
+      left: 24px;
+      background: white;
+    }
   </style>
 </head>
 
@@ -1601,10 +1758,6 @@
             <span class="material-icons">add</span>
             Agregar
           </button>
-          <button class="btn-export" onclick="exportJSON()">
-            <span class="material-icons">download</span>
-            Exportar
-          </button>
           <button class="btn-save" onclick="saveAll()">
             <span class="material-icons">save</span>
             Guardar
@@ -1632,6 +1785,42 @@
           <div class="stat-value red" id="statAvg">$13.200</div>
           <div class="stat-sub">hamburguesas</div>
         </div>
+      </div>
+
+      <!-- CARRITO DE PEDIDOS -->
+      <div class="carrito-card">
+        <div class="carrito-card-left">
+          <div class="carrito-card-title">
+            <span class="material-icons icon-wa">shopping_cart</span>
+            Carrito de Pedidos
+          </div>
+          <div class="carrito-card-desc">Los clientes pueden armar su pedido y enviarlo por WhatsApp</div>
+          <div class="carrito-status off" id="carritoStatusLabel">● Inactivo</div>
+        </div>
+        <div class="toggle-wrap">
+          <input type="checkbox" class="toggle-switch" id="carritoToggle" onchange="toggleCarrito(this.checked)" />
+          <label class="toggle-label" for="carritoToggle" aria-label="Activar carrito"></label>
+        </div>
+      </div>
+
+      <!-- HORARIOS DEL LOCAL -->
+      <div class="horarios-card">
+        <div class="horarios-header">
+          <span class="material-icons">schedule</span>
+          <span class="horarios-title">Horarios del Local</span>
+        </div>
+        <div class="carrito-card-desc" style="margin-top:-8px">Si el cliente entra fuera de este horario, verá un aviso de "Local Cerrado" en el carrito.</div>
+        <div class="horarios-body">
+          <div class="horario-field">
+            <label>Apertura</label>
+            <input type="time" class="horario-input" id="horaApertura" value="20:00" />
+          </div>
+          <div class="horario-field">
+            <label>Cierre</label>
+            <input type="time" class="horario-input" id="horaCierre" value="02:00" />
+          </div>
+        </div>
+        <button class="btn-save-horarios" onclick="saveHorarios()">Guardar Horas</button>
       </div>
 
       <!-- CAT TABS -->
@@ -1737,7 +1926,7 @@
 ═══════════════════════════════════════════════════════ -->
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
     import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
     // ── CONFIGURACIÓN FIREBASE ────────────────────────────────
@@ -1756,6 +1945,10 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // Forzar login en cada nueva sesión (se borra al cerrar la pestaña o el navegador)
+    setPersistence(auth, browserSessionPersistence)
+      .catch((error) => console.error("Error setting persistence:", error));
 
     // ── ESTADO GLOBAL ─────────────────────────────────────────
     window.menuData = {};
@@ -1830,6 +2023,7 @@
     };
 
     async function loadMenu() {
+      // Cargar el menú principal (siempre requerido)
       try {
         const cats = ['hamburguesas', 'lomos', 'papas', 'extras'];
         const snaps = await Promise.all(cats.map(c => getDoc(doc(db, 'menu', c))));
@@ -1854,9 +2048,75 @@
         console.error('Error cargando menu:', err);
         window.showToast('Error al cargar el menú', 'warn');
       }
+
+      // Cargar configuración (carrito y horarios)
+      try {
+        const cfgSnap = await getDoc(doc(db, 'config', 'settings'));
+        if (cfgSnap.exists()) {
+          const data = cfgSnap.data();
+          
+          // Carrito
+          const activo = data.carritoActivo === true;
+          const toggle = document.getElementById('carritoToggle');
+          const label = document.getElementById('carritoStatusLabel');
+          toggle.checked = activo;
+          label.textContent = activo ? '\u25cf Activo' : '\u25cf Inactivo';
+          label.className = activo ? 'carrito-status on' : 'carrito-status off';
+
+          // Horarios
+          if (data.horaApertura) document.getElementById('horaApertura').value = data.horaApertura;
+          if (data.horaCierre) document.getElementById('horaCierre').value = data.horaCierre;
+        }
+      } catch (err) {
+        console.warn('Config no disponible: verifica la regla de Firestore para config/settings.');
+      }
     }
 
+    // ── TOGGLE CARRITO ───────────────────────────────────────────────
+    window.toggleCarrito = async function(activo) {
+      const label = document.getElementById('carritoStatusLabel');
+      label.textContent = activo ? '\u25cf Activo' : '\u25cf Inactivo';
+      label.className = activo ? 'carrito-status on' : 'carrito-status off';
+      try {
+        await setDoc(doc(db, 'config', 'settings'), { carritoActivo: activo }, { merge: true });
+        window.showToast(activo ? '🛒 Carrito activado' : 'Carrito desactivado');
+      } catch (err) {
+        console.error('Error guardando carrito:', err);
+        window.showToast('Error al guardar', 'warn');
+        // Revertir toggle si falla
+        document.getElementById('carritoToggle').checked = !activo;
+        label.textContent = !activo ? '\u25cf Activo' : '\u25cf Inactivo';
+        label.className = !activo ? 'carrito-status on' : 'carrito-status off';
+      }
+    };
+
     // ── GUARDAR EN FIRESTORE ──────────────────────────────────
+    window.saveHorarios = async function() {
+      const horaApertura = document.getElementById('horaApertura').value;
+      const horaCierre = document.getElementById('horaCierre').value;
+      
+      if (!horaApertura || !horaCierre) {
+        window.showToast('Debes completar las horas', 'warn');
+        return;
+      }
+
+      const btn = document.querySelector('.btn-save-horarios');
+      const oldText = btn.textContent;
+      btn.textContent = 'Guardando...';
+      btn.disabled = true;
+
+      try {
+        await setDoc(doc(db, 'config', 'settings'), { horaApertura, horaCierre }, { merge: true });
+        window.showToast('Horarios guardados');
+      } catch (err) {
+        console.error('Error guardando horarios:', err);
+        window.showToast('Error al guardar horarios', 'warn');
+      } finally {
+        btn.textContent = oldText;
+        btn.disabled = false;
+      }
+    };
+
     async function saveToFirestore() {
       const btn = document.querySelector('.btn-save');
       btn.disabled = true;
@@ -1982,19 +2242,7 @@
       window.render();
     };
 
-    // ── EXPORT JSON ───────────────────────────────────────────
-    window.exportJSON = function () {
-      const output = {};
-      Object.entries(window.menuData).forEach(([k, cat]) => {
-        output[k] = cat.items.map(i => ({ id: i.id, name: i.name, price: window.currentPrices[i.id] }));
-      });
-      const blob = new Blob([JSON.stringify(output, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'burgertime-precios.json';
-      a.click();
-      window.showToast('JSON exportado');
-    };
+
 
     // ── TOAST ─────────────────────────────────────────────────
     let toastTimer;

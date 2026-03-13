@@ -953,6 +953,568 @@
       display: block;
       margin: 0 auto;
     }
+
+    /* ─── CARRITO ─── */
+    /* Botón + en cada card */
+    .btn-add-cart {
+      display: none; /* oculto hasta que carritoActivo=true */
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--red);
+      color: white;
+      border: none;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(217,35,42,0.45);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    .btn-add-cart:active {
+      transform: scale(0.85);
+      box-shadow: 0 1px 4px rgba(217,35,42,0.3);
+    }
+    .carrito-activo .btn-add-cart {
+      display: flex;
+    }
+    /* Ajuste padding-bottom en cards para dar espacio al botón + */
+    .carrito-activo .burger-card,
+    .carrito-activo .lomo-card {
+      padding-bottom: 52px;
+    }
+    .carrito-activo .papas-item,
+    .carrito-activo .extra-item {
+      padding-right: 52px;
+    }
+
+    /* FAB del carrito */
+    #cartFab {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      background: var(--red);
+      color: white;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(217,35,42,0.55);
+      z-index: 201;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+      animation: waBounce 2s ease 3s infinite;
+    }
+    #cartFab:active { transform: scale(0.9); }
+    #cartFab .material-icons { font-size: 28px; }
+    #cartFab .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Anton', sans-serif;
+      font-size: 12px;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      border: 2px solid white;
+      line-height: 1;
+    }
+    .carrito-activo #cartFab {
+      display: flex;
+    }
+
+    /* Ocultar wa-btn cuando el carrito está activo */
+    .carrito-activo .wa-btn {
+      display: none;
+    }
+
+    /* Overlay oscuro */
+    #cartOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 300;
+      backdrop-filter: blur(2px);
+    }
+    #cartOverlay.open { display: block; }
+
+    /* Drawer del carrito */
+    #cartDrawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      z-index: 400;
+      padding: 0 0 env(safe-area-inset-bottom, 16px);
+      transform: translateY(100%);
+      transition: transform 0.42s cubic-bezier(0.34,1.08,0.64,1);
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    #cartDrawer.open {
+      transform: translateY(0);
+    }
+    .drawer-handle {
+      width: 40px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 10px;
+      border-bottom: 1px solid #f0ebe4;
+      flex-shrink: 0;
+    }
+    .drawer-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--black);
+    }
+    .drawer-close {
+      background: #f0ebe4;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: #555;
+      transition: background 0.2s;
+    }
+    .drawer-close:active { background: #ddd; }
+    #cartList {
+      overflow-y: auto;
+      flex: 1;
+      padding: 12px 20px 0;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0ebe4;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item-name {
+      flex: 1;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--black);
+      line-height: 1.3;
+    }
+    .cart-item-sub {
+      font-size: 12px;
+      color: #888;
+      font-weight: 400;
+    }
+    .cart-qty-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cart-qty-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--red);
+      background: white;
+      color: var(--red);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+      transition: background 0.15s, color 0.15s;
+    }
+    .cart-qty-btn:active { background: var(--red); color: white; }
+    .cart-qty-num {
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      min-width: 20px;
+      text-align: center;
+    }
+    .cart-item-price {
+      font-family: 'Anton', sans-serif;
+      font-size: 15px;
+      color: var(--red);
+      white-space: nowrap;
+    }
+    #cartEmpty {
+      text-align: center;
+      padding: 36px 0;
+      color: #bbb;
+      font-size: 14px;
+    }
+    #cartEmpty .material-icons {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 8px;
+      color: #ddd;
+    }
+
+    /* Observaciones */
+    .cart-notes-wrap {
+      padding: 12px 20px 0;
+      flex-shrink: 0;
+    }
+    .cart-notes-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+      margin-bottom: 6px;
+      display: block;
+    }
+    #cartNotes {
+      width: 100%;
+      background: #faf8f5;
+      border: 1.5px solid #e8e0d5;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px;
+      color: var(--black);
+      resize: none;
+      height: 70px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #cartNotes:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(217,35,42,0.08);
+    }
+    #cartNotes::placeholder { color: #bbb; }
+
+    /* Footer del drawer */
+    .drawer-footer {
+      padding: 14px 20px 20px;
+      flex-shrink: 0;
+      border-top: 1px solid #f0ebe4;
+    }
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .cart-total-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cart-total-amount {
+      font-family: 'Anton', sans-serif;
+      font-size: 28px;
+      color: var(--black);
+    }
+    #btnSendWA {
+      width: 100%;
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 40px;
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: block;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    #btnSendWA span {
+      position: relative;
+      top: 1px;
+    }
+    #btnSendWA:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px rgba(37,211,102,0.3);
+    }
+    #btnSendWA .material-icons {
+      font-size: 22px;
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    #btnClearCart {
+      width: 100%;
+      background: #f0ebe4;
+      border: none;
+      border-radius: 14px;
+      color: #888;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      padding: 14px;
+      margin-top: 12px;
+      transition: background 0.2s, color 0.2s;
+    }
+    #btnClearCart:active {
+      background: #e8e0d5;
+      color: var(--red);
+    }
+
+    /* ── CHECKOUT PANEL ─────────────────────────────────────── */
+    #checkoutPanel {
+      position: absolute;
+      inset: 0;
+      background: white;
+      border-radius: 24px 24px 0 0;
+      transform: translateX(105%);
+      transition: transform 0.38s cubic-bezier(0.34,1.08,0.64,1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #checkoutPanel.active {
+      transform: translateX(0);
+    }
+    .checkout-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid #f0ebe4;
+      flex-shrink: 0;
+    }
+    .checkout-back {
+      background: #f0ebe4;
+      border: none;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #555;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .checkout-back:active { background: #ddd; }
+    .checkout-back .material-icons { font-size: 18px; }
+    .checkout-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--black);
+    }
+    .checkout-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 20px 10px;
+    }
+    .checkout-field {
+      margin-bottom: 20px;
+    }
+    .checkout-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .checkout-input {
+      width: 100%;
+      background: #faf8f5;
+      border: 1.5px solid #e8e0d5;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      color: var(--black);
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .checkout-input:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(217,35,42,0.08);
+    }
+    .checkout-input.error {
+      border-color: var(--red);
+    }
+    .tipo-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tipo-btn {
+      flex: 1;
+      min-width: 100px;
+      background: #f5f0eb;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 11px 10px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .tipo-btn.selected {
+      border-color: var(--black);
+      color: var(--black);
+      background: rgba(0,0,0,0.04);
+    }
+    .tipo-btn.pago-btn.selected {
+      border-color: #25D366;
+      color: #25D366;
+      background: rgba(37,211,102,0.06);
+    }
+    .checkout-error {
+      font-size: 11px;
+      color: var(--red);
+      font-weight: 700;
+      margin-top: 6px;
+      display: none;
+    }
+    .checkout-error.show { display: block; }
+    .checkout-footer {
+      padding: 14px 20px 20px;
+      border-top: 1px solid #f0ebe4;
+      flex-shrink: 0;
+    }
+    #btnConfirmar {
+      width: 100%;
+      background: #25D366;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 40px;
+      font-family: 'Anton', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: block;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    #btnConfirmar span { position: relative; top: 1px; }
+    #btnConfirmar:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px rgba(37,211,102,0.3);
+    }
+    #btnConfirmar .material-icons {
+      font-size: 22px;
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .envio-notice {
+      display: none;
+      background: #fff8e1;
+      border: 1.5px solid #ffe082;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .envio-notice.show { display: flex; }
+    .envio-notice .material-icons {
+      font-size: 18px;
+      color: #f59e0b;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .envio-notice p {
+      font-size: 12px;
+      color: #92400e;
+      line-height: 1.5;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    /* Banner Local Cerrado */
+    .closed-banner {
+      display: none;
+      background: #fef2f2;
+      border-bottom: 1.5px solid #fee2e2;
+      padding: 12px 20px;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .closed-banner.show { display: flex; }
+    .closed-banner .material-icons {
+      color: var(--red);
+      font-size: 20px;
+    }
+    .closed-banner-text {
+      flex: 1;
+    }
+    .closed-banner-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .closed-banner-desc {
+      font-size: 11px;
+      color: #7f1d1d;
+      line-height: 1.3;
+    }
   </style>
 </head>
 
@@ -1066,7 +1628,112 @@
         onmouseout="this.style.color='#aaa'">Novathek</a></p>
   </footer>
 
-  <!-- WHATSAPP -->
+  <!-- OVERLAY CARRITO -->
+  <div id="cartOverlay" onclick="closeCart()"></div>
+
+  <!-- DRAWER CARRITO -->
+  <div id="cartDrawer" role="dialog" aria-modal="true" aria-label="Tu pedido">
+    <div class="drawer-handle"></div>
+    <div class="drawer-header">
+      <span class="drawer-title">🛒 Tu Pedido</span>
+      <button class="drawer-close" onclick="closeCart()" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="closed-banner" id="closedBanner">
+      <span class="material-icons">schedule</span>
+      <div class="closed-banner-text">
+        <div class="closed-banner-title">Local cerrado en este horario</div>
+        <div class="closed-banner-desc">Podés armar y dejarnos tu pedido, pero responderemos al abrir el local.</div>
+      </div>
+    </div>
+    <div id="cartList">
+      <div id="cartEmpty">
+        <span class="material-icons">shopping_bag</span>
+        Tu carrito está vacío
+      </div>
+    </div>
+    <div class="cart-notes-wrap">
+      <span class="cart-notes-label">📝 Observaciones</span>
+      <textarea id="cartNotes" placeholder="Ej: sin cebolla, bien cocido, salsa a parte..." maxlength="300"></textarea>
+    </div>
+    <div class="drawer-footer">
+      <div class="cart-total-row">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-amount" id="cartTotal">$0</span>
+      </div>
+      <button id="btnSendWA" onclick="openCheckout()">
+        <span class="material-icons">arrow_forward</span>
+        <span>Realizar Pedido</span>
+      </button>
+      <button id="btnClearCart" onclick="clearCart()">Vaciar carrito</button>
+    </div>
+
+    <!-- PANEL CHECKOUT (paso 2) -->
+    <div id="checkoutPanel">
+      <div class="checkout-header">
+        <button class="checkout-back" onclick="closeCheckout()" aria-label="Volver">
+          <span class="material-icons">arrow_back_ios</span>
+        </button>
+        <span class="checkout-title">Datos del Pedido</span>
+      </div>
+      <div class="checkout-body">
+
+        <!-- Nombre -->
+        <div class="checkout-field">
+          <label>Nombre</label>
+          <input class="checkout-input" id="chkNombre" type="text" placeholder="Tu nombre completo..." autocomplete="name" />
+          <div class="checkout-error" id="errNombre">Ingresá tu nombre</div>
+        </div>
+
+        <!-- Tipo de pedido -->
+        <div class="checkout-field">
+          <label>Tipo de pedido</label>
+          <div class="tipo-btns">
+            <button class="tipo-btn" id="btnRetiro" onclick="setTipo('retiro')">🛍 Para Retirar</button>
+            <button class="tipo-btn" id="btnEnvio" onclick="setTipo('envio')">🚚 Para Enviar</button>
+          </div>
+          <div class="checkout-error" id="errTipo">Seleccioná el tipo de pedido</div>
+        </div>
+
+        <!-- Dirección (solo Para Enviar) -->
+        <div class="checkout-field" id="checkoutAddressField" style="display:none">
+          <label>Dirección</label>
+          <input class="checkout-input" id="chkDireccion" type="text" placeholder="Calle, número, barrio..." autocomplete="street-address" />
+          <div class="checkout-error" id="errDireccion">Ingresá la dirección de entrega</div>
+          <div class="envio-notice" id="envioNotice">
+            <span class="material-icons">info</span>
+            <p>El costo de envío no está incluido en el total. Una vez recibido tu pedido, te informaremos el valor final con el envío incluido.</p>
+          </div>
+        </div>
+
+        <!-- Forma de pago -->
+        <div class="checkout-field">
+          <label>Forma de pago</label>
+          <div class="tipo-btns">
+            <button class="tipo-btn pago-btn" id="btnEfectivo" onclick="setPago('Efectivo')">💵 Efectivo</button>
+            <button class="tipo-btn pago-btn" id="btnTransferencia" onclick="setPago('Transferencia')">📲 Transferencia</button>
+            <button class="tipo-btn pago-btn" id="btnDebito" onclick="setPago('Débito')">💳 Débito</button>
+          </div>
+          <div class="checkout-error" id="errPago">Seleccioná la forma de pago</div>
+        </div>
+
+      </div>
+      <div class="checkout-footer">
+        <button id="btnConfirmar" onclick="confirmPedido()">
+          <span class="material-icons">whatsapp</span>
+          <span>Confirmar Pedido</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAB CARRITO -->
+  <button id="cartFab" onclick="openCart()" aria-label="Ver pedido">
+    <span class="material-icons">shopping_bag</span>
+    <span class="cart-badge" id="cartBadge">0</span>
+  </button>
+
+  <!-- WHATSAPP (contacto directo) -->
   <a class="wa-btn" href="https://wa.me/3834003945">
     <span class="material-icons">chat</span>
   </a>
@@ -1083,6 +1750,253 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
     import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    // ── CARRITO STATE ─────────────────────────────────────────
+    let cart = {}; // { id: { name, price, qty } }
+    let carritoActivo = false;
+    let horaApertura = null;
+    let horaCierre = null;
+
+    function isLocalAbierto() {
+      if (!horaApertura || !horaCierre) return true; // Si no hay config, asumir abierto
+      const now = new Date();
+      const [ha, ma] = horaApertura.split(':').map(Number);
+      const [hc, mc] = horaCierre.split(':').map(Number);
+      const minNow = now.getHours() * 60 + now.getMinutes();
+      const minAp = ha * 60 + ma;
+      const minCi = hc * 60 + mc;
+      
+      // Cruza la medianoche (ej 21:00 a 02:00)
+      if (minCi < minAp) return minNow >= minAp || minNow < minCi;
+      // Horario normal
+      return minNow >= minAp && minNow < minCi;
+    }
+
+    function checkHorario() {
+      const banner = document.getElementById('closedBanner');
+      if (!isLocalAbierto()) {
+        banner.classList.add('show');
+      } else {
+        banner.classList.remove('show');
+      }
+    }
+
+    function fmt2(n) { return Number(n).toLocaleString('es-AR'); }
+
+    function addToCart(id, name, price) {
+      if (!cart[id]) cart[id] = { name, price, qty: 0 };
+      cart[id].qty++;
+      renderCart();
+      updateFab();
+      if (navigator.vibrate) navigator.vibrate(30);
+    }
+
+    function removeFromCart(id) {
+      if (!cart[id]) return;
+      cart[id].qty--;
+      if (cart[id].qty <= 0) delete cart[id];
+      renderCart();
+      updateFab();
+    }
+
+    function clearCart() {
+      cart = {};
+      document.getElementById('cartNotes').value = '';
+      // resetear checkout
+      document.getElementById('chkNombre').value = '';
+      document.getElementById('chkDireccion').value = '';
+      checkoutTipo = null;
+      checkoutPago = null;
+      document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('checkoutAddressField').style.display = 'none';
+      document.querySelectorAll('.checkout-error').forEach(e => e.classList.remove('show'));
+      document.querySelectorAll('.checkout-input').forEach(i => i.classList.remove('error'));
+      closeCheckout();
+      renderCart();
+      updateFab();
+    }
+
+    function updateFab() {
+      const total = Object.values(cart).reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cartBadge').textContent = total;
+    }
+
+    function renderCart() {
+      const list = document.getElementById('cartList');
+      const empty = document.getElementById('cartEmpty');
+      const items = Object.entries(cart);
+      if (items.length === 0) {
+        empty.style.display = 'block';
+        list.querySelectorAll('.cart-item').forEach(el => el.remove());
+        document.getElementById('cartTotal').textContent = '$0';
+        return;
+      }
+      empty.style.display = 'none';
+      // Limpiar items anteriores
+      list.querySelectorAll('.cart-item').forEach(el => el.remove());
+      let total = 0;
+      items.forEach(([id, item]) => {
+        total += item.price * item.qty;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="cart-item-name">${item.name}<br><span class="cart-item-sub">$${fmt2(item.price)} c/u</span></div>
+          <div class="cart-qty-row">
+            <button class="cart-qty-btn" onclick="removeFromCart('${id}')" aria-label="Restar">−</button>
+            <span class="cart-qty-num">${item.qty}</span>
+            <button class="cart-qty-btn" onclick="addToCart('${id}', decodeURIComponent('${encodeURIComponent(item.name)}'), ${item.price})" aria-label="Sumar">+</button>
+          </div>
+          <span class="cart-item-price">$${fmt2(item.price * item.qty)}</span>
+        `;
+        list.appendChild(div);
+      });
+      document.getElementById('cartTotal').textContent = `$${fmt2(total)}`;
+    }
+
+    function openCart() {
+      document.getElementById('cartOverlay').classList.add('open');
+      document.getElementById('cartDrawer').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      checkHorario();
+    }
+
+    function closeCart() {
+      document.getElementById('cartOverlay').classList.remove('open');
+      document.getElementById('cartDrawer').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function sendWhatsApp(nombre, tipo, direccion, pago) {
+      const items = Object.values(cart);
+      if (items.length === 0) return;
+      let msg = '*PEDIDO BURGERTIME*\n\n';
+      items.forEach(item => {
+        msg += `- ${item.qty}x ${item.name} — $${fmt2(item.price * item.qty)}\n`;
+      });
+      const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+      if (tipo === 'retiro') {
+        msg += `\n*Total: $${fmt2(total)}*`;
+      }
+      msg += `\n\n*Nombre:* ${nombre}`;
+      if (tipo === 'envio') {
+        msg += `\n*Tipo:* Para Enviar — ${direccion}`;
+      } else {
+        msg += `\n*Tipo:* Para Retirar`;
+      }
+      msg += `\n*Pago:* ${pago}`;
+      const notes = document.getElementById('cartNotes').value.trim();
+      if (notes) msg += `\n\n*Observaciones:* ${notes}`;
+      if (tipo === 'envio') {
+        msg += `\n\nQuedo a la espera de la confirmación del precio final con el costo de envío incluido.`;
+      }
+      window.open(`https://wa.me/3834003945?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ── CHECKOUT ──────────────────────────────────────────────
+    let checkoutTipo = null;
+    let checkoutPago = null;
+
+    function openCheckout() {
+      if (Object.keys(cart).length === 0) return;
+      document.getElementById('checkoutPanel').classList.add('active');
+      setTimeout(() => document.getElementById('chkNombre').focus(), 400);
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutPanel').classList.remove('active');
+    }
+
+    function setTipo(tipo) {
+      checkoutTipo = tipo;
+      document.getElementById('btnRetiro').classList.toggle('selected', tipo === 'retiro');
+      document.getElementById('btnEnvio').classList.toggle('selected', tipo === 'envio');
+      document.getElementById('checkoutAddressField').style.display = tipo === 'envio' ? 'block' : 'none';
+      document.getElementById('envioNotice').classList.toggle('show', tipo === 'envio');
+      document.getElementById('errTipo').classList.remove('show');
+      // Débito solo disponible para retiro en local
+      const btnDebito = document.getElementById('btnDebito');
+      if (tipo === 'envio') {
+        btnDebito.style.display = 'none';
+        if (checkoutPago === 'Débito') { checkoutPago = null; btnDebito.classList.remove('selected'); }
+      } else {
+        btnDebito.style.display = '';
+      }
+    }
+
+    function setPago(pago) {
+      checkoutPago = pago;
+      document.querySelectorAll('.pago-btn').forEach(b => b.classList.remove('selected'));
+      const map = { 'Efectivo': 'btnEfectivo', 'Transferencia': 'btnTransferencia', 'D\u00E9bito': 'btnDebito' };
+      if (map[pago]) document.getElementById(map[pago]).classList.add('selected');
+      document.getElementById('errPago').classList.remove('show');
+    }
+
+    function confirmPedido() {
+      let valid = true;
+      const nombre = document.getElementById('chkNombre').value.trim();
+      const direccion = document.getElementById('chkDireccion').value.trim();
+
+      // Validar nombre
+      const errNombre = document.getElementById('errNombre');
+      const inputNombre = document.getElementById('chkNombre');
+      if (!nombre) {
+        errNombre.classList.add('show');
+        inputNombre.classList.add('error');
+        valid = false;
+      } else {
+        errNombre.classList.remove('show');
+        inputNombre.classList.remove('error');
+      }
+
+      // Validar tipo
+      const errTipo = document.getElementById('errTipo');
+      if (!checkoutTipo) {
+        errTipo.classList.add('show');
+        valid = false;
+      } else {
+        errTipo.classList.remove('show');
+      }
+
+      // Validar dirección si es envío
+      if (checkoutTipo === 'envio') {
+        const errDir = document.getElementById('errDireccion');
+        const inputDir = document.getElementById('chkDireccion');
+        if (!direccion) {
+          errDir.classList.add('show');
+          inputDir.classList.add('error');
+          valid = false;
+        } else {
+          errDir.classList.remove('show');
+          inputDir.classList.remove('error');
+        }
+      }
+
+      // Validar pago
+      const errPago = document.getElementById('errPago');
+      if (!checkoutPago) {
+        errPago.classList.add('show');
+        valid = false;
+      } else {
+        errPago.classList.remove('show');
+      }
+
+      if (!valid) return;
+
+      sendWhatsApp(nombre, checkoutTipo, direccion, checkoutPago);
+    }
+
+    // Exponer al scope global para los onclick
+    window.addToCart = addToCart;
+    window.removeFromCart = removeFromCart;
+    window.clearCart = clearCart;
+    window.openCart = openCart;
+    window.closeCart = closeCart;
+    window.openCheckout = openCheckout;
+    window.closeCheckout = closeCheckout;
+    window.setTipo = setTipo;
+    window.setPago = setPago;
+    window.confirmPedido = confirmPedido;
+    // ──────────────────────────────────────────────────────────
 
     // ── CONFIGURACIÓN FIREBASE ─────────────────────────────────
     // ⚠️  Reemplazá estos valores con los de tu proyecto Firebase
@@ -1120,6 +2034,7 @@
       const container = document.getElementById('hamburguesas');
       container.innerHTML = `<h2 class="section-title reveal">Hamburguesas de Vacío <span class="fire-dot"></span></h2>`;
       items.forEach((item, i) => {
+        const id = `h_${i}`;
         const card = document.createElement('div');
         card.className = `burger-card ripple-container reveal ${stagger(i + 1)}`;
         card.innerHTML = `
@@ -1128,6 +2043,7 @@
           <span class="burger-price">$${fmt(item.price)}</span>
         </div>
         ${item.desc ? `<p class="burger-desc">${item.desc}</p>` : ''}
+        <button class="btn-add-cart" onclick="event.stopPropagation();addToCart('${id}', decodeURIComponent('${encodeURIComponent(item.name)}'), ${item.price})" aria-label="Agregar al carrito">+</button>
       `;
         container.appendChild(card);
       });
@@ -1139,12 +2055,14 @@
       const container = document.getElementById('lomos');
       container.innerHTML = `<h2 class="section-title reveal">Lomos <span class="fire-dot"></span></h2>`;
       items.forEach((item, i) => {
+        const id = `l_${i}`;
         const card = document.createElement('div');
         card.className = `lomo-card reveal ${stagger(i + 1)}`;
         card.innerHTML = `
         <div class="lomo-price">$${fmt(item.price)}</div>
         <div class="lomo-name">${item.name}</div>
         ${item.desc ? `<p class="lomo-desc">${item.desc}</p>` : ''}
+        <button class="btn-add-cart" onclick="event.stopPropagation();addToCart('${id}', decodeURIComponent('${encodeURIComponent(item.name)}'), ${item.price})" aria-label="Agregar al carrito">+</button>
       `;
         container.appendChild(card);
       });
@@ -1156,11 +2074,13 @@
       const container = document.getElementById('papas');
       container.innerHTML = `<h2 class="section-title reveal">Papas &amp; Entradas <span class="fire-dot"></span></h2>`;
       items.forEach((item, i) => {
+        const id = `p_${i}`;
         const row = document.createElement('div');
         row.className = `papas-item ripple-container reveal ${stagger(i + 1)}`;
         row.innerHTML = `
         <span>${item.name}</span>
         <span class="papas-price">$${fmt(item.price)}</span>
+        <button class="btn-add-cart" onclick="event.stopPropagation();addToCart('${id}', decodeURIComponent('${encodeURIComponent(item.name)}'), ${item.price})" aria-label="Agregar al carrito">+</button>
       `;
         container.appendChild(row);
       });
@@ -1174,11 +2094,13 @@
       const grid = document.createElement('div');
       grid.className = 'extras-grid';
       items.forEach((item, i) => {
+        const id = `e_${i}`;
         const cell = document.createElement('div');
         cell.className = `extra-item reveal ${stagger(i + 1)}`;
         cell.innerHTML = `
         <span class="extra-name">${item.name}</span>
         <span class="extra-price">$${fmt(item.price)}</span>
+        <button class="btn-add-cart" onclick="event.stopPropagation();addToCart('${id}', decodeURIComponent('${encodeURIComponent(item.name)}'), ${item.price})" aria-label="Agregar al carrito">+</button>
       `;
         grid.appendChild(cell);
       });
@@ -1229,6 +2151,7 @@
       document.getElementById('loadingMsg').style.display = 'block';
 
       try {
+        // Cargar el menú (siempre requerido)
         const [hSnap, lSnap, pSnap, eSnap] = await Promise.all([
           getDoc(doc(db, 'menu', 'hamburguesas')),
           getDoc(doc(db, 'menu', 'lomos')),
@@ -1247,6 +2170,20 @@
         console.error('Error cargando menú:', err);
         document.getElementById('loadingMsg').style.display = 'none';
         document.getElementById('errorMsg').style.display = 'block';
+      }
+
+      // Cargar config del carrito y horarios por separado (falla silenciosamente si no hay permisos)
+      try {
+        const cfgSnap = await getDoc(doc(db, 'config', 'settings'));
+        if (cfgSnap.exists()) {
+          const data = cfgSnap.data();
+          carritoActivo = data.carritoActivo === true;
+          horaApertura = data.horaApertura || null;
+          horaCierre = data.horaCierre || null;
+          if (carritoActivo) document.body.classList.add('carrito-activo');
+        }
+      } catch (err) {
+        console.warn('Config no disponible: agrega la regla de Firestore para config/settings.');
       }
     }
 
