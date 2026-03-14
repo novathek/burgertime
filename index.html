@@ -782,41 +782,6 @@
       }
     }
 
-    /* ─── SCROLL TOP BUTTON ─── */
-    #scrollTop {
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      background: var(--black);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      opacity: 0;
-      transform: scale(0);
-      transition: opacity 0.3s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    #scrollTop.show {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    #scrollTop:active {
-      transform: scale(0.9);
-    }
-
-    #scrollTop .material-icons {
-      font-size: 20px;
-    }
-
     /* ─── RIPPLE ─── */
     .ripple-container {
       position: relative;
@@ -1259,14 +1224,21 @@
       text-align: center;
       position: relative;
       box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, background 0.2s, color 0.2s;
       white-space: nowrap;
+    }
+    #btnSendWA:disabled {
+      background: #e5e7eb;
+      color: #9ca3af;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
     }
     #btnSendWA span {
       position: relative;
       top: 1px;
     }
-    #btnSendWA:active {
+    #btnSendWA:active:not(:disabled) {
       transform: scale(0.97);
       box-shadow: 0 2px 10px rgba(37,211,102,0.3);
     }
@@ -1642,7 +1614,7 @@
       <span class="material-icons">schedule</span>
       <div class="closed-banner-text">
         <div class="closed-banner-title">Local cerrado en este horario</div>
-        <div class="closed-banner-desc">Podés armar y dejarnos tu pedido, pero responderemos al abrir el local.</div>
+        <div class="closed-banner-desc">Podés ver nuestro menú, pero en este momento no estamos tomando pedidos.</div>
       </div>
     </div>
     <div id="cartList">
@@ -1738,11 +1710,6 @@
     <span class="material-icons">chat</span>
   </a>
 
-  <!-- SCROLL TOP -->
-  <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-    <span class="material-icons">keyboard_arrow_up</span>
-  </button>
-
   <!-- ═══════════════════════════════════════════════════════════
      FIREBASE SDK (ESModules via CDN)
      Reemplazá los valores de firebaseConfig con los tuyos.
@@ -1774,10 +1741,25 @@
 
     function checkHorario() {
       const banner = document.getElementById('closedBanner');
+      const btnSendWA = document.getElementById('btnSendWA');
       if (!isLocalAbierto()) {
         banner.classList.add('show');
+        if (btnSendWA) {
+          btnSendWA.disabled = true;
+          btnSendWA.innerHTML = `
+            <span class="material-icons">block</span>
+            <span>Local Cerrado</span>
+          `;
+        }
       } else {
         banner.classList.remove('show');
+        if (btnSendWA) {
+          btnSendWA.disabled = false;
+          btnSendWA.innerHTML = `
+            <span class="material-icons">arrow_forward</span>
+            <span>Realizar Pedido</span>
+          `;
+        }
       }
     }
 
@@ -1897,7 +1879,7 @@
     let checkoutPago = null;
 
     function openCheckout() {
-      if (Object.keys(cart).length === 0) return;
+      if (!isLocalAbierto() || Object.keys(cart).length === 0) return;
       document.getElementById('checkoutPanel').classList.add('active');
       setTimeout(() => document.getElementById('chkNombre').focus(), 400);
     }
@@ -2200,13 +2182,6 @@
   </script>
 
   <script>
-    // ─── SCROLL TOP BUTTON ───
-    window.addEventListener('scroll', () => {
-      const btn = document.getElementById('scrollTop');
-      if (window.scrollY > 400) btn.classList.add('show');
-      else btn.classList.remove('show');
-    }, { passive: true });
-
     // ─── CATEGORY PILLS active state ───
     const sections = ['hamburguesas', 'lomos', 'papas', 'extras'];
     const pills = document.querySelectorAll('.cat-pill');
